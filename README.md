@@ -1,0 +1,1 @@
+### Repositório destinado a exemplos de Curso de JavaScript e TypeScript
