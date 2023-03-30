@@ -3,6 +3,7 @@ import * as types from '../types';
 import {
   addLocalStorage,
   getLocalStorage,
+  clearLocalStorage,
 } from '../../../../services/localStorage';
 
 const initialState = {
@@ -32,22 +33,28 @@ export default (state = initialState, action) => {
       return { ...newState };
     }
     case types.LOGIN_FAIL: {
-      const newState = { ...initialState };
-      return { ...newState };
+      clearLocalStorage();
+      return { ...initialState };
     }
     case types.REGISTER_REQUEST: {
       const newState = { ...state, isLoading: true };
       return { ...newState };
     }
-    case types.REGISTER_SUCCESS: {
+    case types.REGISTER_CREATED_SUCCESS: {
+      const newState = {
+        ...state,
+        isLoading: false,
+      };
+      addLocalStorage({ ...newState, user: { ...action.payload } });
+      return { ...newState };
+    }
+    case types.REGISTER_UPDATED_SUCCESS: {
       const loginStorage = JSON.parse(getLocalStorage('login'));
       const newState = {
         ...loginStorage,
         isLoggedIn: true,
         isLoading: false,
       };
-      console.log('REGISTER SUCCESS');
-      console.log(loginStorage);
       addLocalStorage({ ...newState, user: { ...action.payload } });
       return { ...newState };
     }

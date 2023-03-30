@@ -16,8 +16,12 @@ export const registerRequest = (payload) => {
   return { type: types.REGISTER_REQUEST, payload };
 };
 
-export const registerSuccess = (payload) => {
-  return { type: types.REGISTER_SUCCESS, payload };
+export const registerCreatedSuccess = (payload) => {
+  return { type: types.REGISTER_CREATED_SUCCESS, payload };
+};
+
+export const registerUpdatedSuccess = (payload) => {
+  return { type: types.REGISTER_UPDATED_SUCCESS, payload };
 };
 
 export const registerFail = (payload) => {
