@@ -15,7 +15,6 @@ const initialState = {
 
 // eslint-disable-next-line
 export default (state = initialState, action) => {
-  console.log('EU SOU A ACTION', action);
   switch (action.type) {
     case types.LOGIN_REQUEST: {
       const newState = { ...state, isLoading: true };
