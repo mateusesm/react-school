@@ -1,5 +1,7 @@
 import * as types from '../types';
 
+import axios from '../../../../services/axios';
+
 import {
   addLocalStorage,
   getLocalStorage,
@@ -33,6 +35,7 @@ export default (state = initialState, action) => {
     }
     case types.LOGIN_FAIL: {
       clearLocalStorage();
+      delete axios.defaults.headers.Authorization;
       return { ...initialState };
     }
     case types.REGISTER_REQUEST: {
