@@ -108,7 +108,7 @@ export const Student = ({ match }) => {
 
         toast.success('Student edited with success!');
       } else {
-        await axios.post(`/students/`, {
+        const { data } = await axios.post(`/students/`, {
           name,
           lastname,
           email,
@@ -118,6 +118,7 @@ export const Student = ({ match }) => {
         });
 
         toast.success('Student created with success!');
+        history.push(`/student/${data.id}/edit`);
       }
 
       setIsLoading(false);
