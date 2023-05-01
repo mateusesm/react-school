@@ -36,6 +36,7 @@
     "import/no-extraneous-dependencies": "off",
     "no-param-reassign": "off",
     "no-unused-vars": "off",
-    "react/jsx-no-useless-fragment": "off"
+    "react/jsx-no-useless-fragment": "off",
+    "no-useless-return": "off"
   }
 }

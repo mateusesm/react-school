@@ -3,13 +3,20 @@ import { get } from 'lodash';
 import P from 'prop-types';
 import { isEmail, isInt, isFloat } from 'validator';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+
 import { Loading } from '../../components/Loading';
+import * as actions from '../../redux/store/modules/auth/actions';
+
 import axios from '../../services/axios';
 import history from '../../services/history';
+
 import { Form } from './styled';
 import { Container } from '../../styles/GlobalStyles';
 
 export const Student = ({ match }) => {
+  const dispatch = useDispatch();
+
   const id = get(match, 'params.id', 0);
   const [name, setName] = useState('');
   const [lastname, setLastname] = useState('');
@@ -50,7 +57,7 @@ export const Student = ({ match }) => {
     getData();
   }, [id]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     let formErrors = false;
@@ -84,6 +91,53 @@ export const Student = ({ match }) => {
       formErrors = true;
       toast.error('Invalid height!');
     }
+
+    if (formErrors) return;
+
+    try {
+      if (id) {
+        setIsLoading(true);
+        await axios.put(`/students/${id}`, {
+          name,
+          lastname,
+          email,
+          age,
+          weight,
+          height,
+        });
+
+        toast.success('Student edited with success!');
+      } else {
+        await axios.post(`/students/`, {
+          name,
+          lastname,
+          email,
+          age,
+          weight,
+          height,
+        });
+
+        toast.success('Student created with success!');
+      }
+
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+
+      const status = get(err, 'response.status', 0);
+      const data = get(err, 'response.data', {});
+      const errors = get(data, 'errors', []);
+
+      if (errors.length > 0) {
+        errors.map((error) => toast.error(error));
+      } else {
+        toast.error('Unknow error!');
+      }
+
+      if (status === 401) {
+        dispatch(actions.loginFail());
+      }
+    }
   };
 
   return (
@@ -100,7 +154,7 @@ export const Student = ({ match }) => {
           placeholder="Student name"
         />
         <input
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setLastname(e.target.value)}
           type="text"
           name=""
           id=""
@@ -108,7 +162,7 @@ export const Student = ({ match }) => {
           placeholder="Student lastname"
         />
         <input
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           type="email"
           name=""
           id=""
@@ -116,7 +170,7 @@ export const Student = ({ match }) => {
           placeholder="Student email"
         />
         <input
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setAge(e.target.value)}
           type="number"
           name=""
           id=""
@@ -124,7 +178,7 @@ export const Student = ({ match }) => {
           placeholder="Student age"
         />
         <input
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setWeight(e.target.value)}
           type="text"
           name=""
           id=""
@@ -132,7 +186,7 @@ export const Student = ({ match }) => {
           placeholder="Student weight"
         />
         <input
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setHeight(e.target.value)}
           type="text"
           name=""
           id=""
