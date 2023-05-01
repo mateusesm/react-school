@@ -4,6 +4,8 @@ import P from 'prop-types';
 import { isEmail, isInt, isFloat } from 'validator';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
+import { FaEdit, FaUserCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 import { Loading } from '../../components/Loading';
 import * as actions from '../../redux/store/modules/auth/actions';
@@ -11,19 +13,20 @@ import * as actions from '../../redux/store/modules/auth/actions';
 import axios from '../../services/axios';
 import history from '../../services/history';
 
-import { Form } from './styled';
+import { Form, ProfilePicture, Title } from './styled';
 import { Container } from '../../styles/GlobalStyles';
 
 export const Student = ({ match }) => {
   const dispatch = useDispatch();
 
-  const id = get(match, 'params.id', 0);
+  const id = get(match, 'params.id', '');
   const [name, setName] = useState('');
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [age, setAge] = useState('');
   const [weight, setWeight] = useState('');
   const [height, setHeight] = useState('');
+  const [profilePhoto, setProfilePhoto] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -34,6 +37,9 @@ export const Student = ({ match }) => {
         setIsLoading(true);
         const { data } = await axios.get(`/students/${id}`);
         const photo = get(data, 'Photos[0].url', '');
+
+        setProfilePhoto(photo);
+
         setName(data.name);
         setLastname(data.lastname);
         setEmail(data.email);
@@ -144,7 +150,21 @@ export const Student = ({ match }) => {
   return (
     <Container>
       <Loading isLoading={isLoading} />
-      <h1>{id ? 'Update Student' : 'New Student'}</h1>
+      <Title>{id ? 'Update Student' : 'New Student'}</Title>
+
+      {id && (
+        <ProfilePicture>
+          {profilePhoto ? (
+            <img src={profilePhoto} alt={name} />
+          ) : (
+            <FaUserCircle size={160} />
+          )}
+          <Link to={`/photos/${id}`}>
+            <FaEdit size={24} />
+          </Link>
+        </ProfilePicture>
+      )}
+
       <Form onSubmit={handleSubmit}>
         <input
           onChange={(e) => setName(e.target.value)}
